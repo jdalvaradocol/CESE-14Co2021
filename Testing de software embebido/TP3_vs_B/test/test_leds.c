@@ -57,20 +57,28 @@ void test_prender_y_apagar_varios_leds (void)
 /* Prueba para que se puedan prender todos los LEDs de una vez.*/
 void test_encender_todos_los_leds (void)
 {
+    LedsTurnOffall();
     LedsTurnOnall();
     TEST_ASSERT_EQUAL_HEX16(0xFFFF, ledsvirtuales);
 }
 /* Prueba para que se puedan apagar todos los LEDs de una vez. */
 void test_apagar_todos_los_leds (void)
 {
+    LedsTurnOnall();
     LedsTurnOffall();
     TEST_ASSERT_EQUAL_HEX16(0x0000, ledsvirtuales);
 }
 /* Prueba para que se puedan consultar el estado de un LED. */
 void test_estado_leds (void)
 {
-    int estado, led = 2;
+    bool estado;
+    int led = 2;
     LedsTurnOn(led);
     estado = LedsState(led);
-    TEST_ASSERT_EQUAL_HEX16(estado, ledsvirtuales);
+    TEST_ASSERT_EQUAL_UINT8(estado, 1);
+
+    LedsTurnOff(led);
+    estado = LedsState(led);
+    TEST_ASSERT_EQUAL_UINT8(estado, 0);
+
 }

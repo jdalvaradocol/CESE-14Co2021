@@ -33,9 +33,9 @@ void LedsTurnOffall(void)
 {
     *puerto = LEDS_ALL_OFF;
 }
-uint16_t LedsState(int led)
+bool LedsState(int led)
 {
-    int a = (*puerto) & (LedsIndexToMask(led));
+    bool a = (*puerto) & (LedsIndexToMask(led));
 
     return (a);
 }
