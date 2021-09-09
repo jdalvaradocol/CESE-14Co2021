@@ -48,7 +48,7 @@ int main( void )
 	int index = 0;
 	int32_t Pre = 0;
 
-	double 	Temperatura = 0.0;
+	double Temperatura = 0.0;
 	double	Lux= 0.0;
 	double	Hum= 0.0;
 	double	Altura= 0.0;
