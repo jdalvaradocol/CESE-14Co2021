@@ -1,5 +1,11 @@
 {
     "files.associations": {
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "lcd.h": "c",
+        "stdbool.h": "c",
+        "leds.h": "c",
+        "math.h": "c",
+        "sd_datos.h": "c",
+        "bmp180.h": "c"
     }
 }

@@ -2,6 +2,8 @@
 
 /*=======Automagically Detected Files To Include=====*/
 #include "unity.h"
+#include "cmock.h"
+#include "mock_i2c.h"
 
 int GlobalExpectCount;
 int GlobalVerifyOrder;
@@ -10,13 +12,11 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
-extern void test_LedsOffAfterCreate (void);
-extern void test_prender_un_led (void);
-extern void test_apagar_un_led (void);
-extern void test_prender_y_apagar_varios_leds (void);
-extern void test_encender_todos_los_leds (void);
-extern void test_apagar_todos_los_leds (void);
-extern void test_estado_leds (void);
+extern void test_init_LCD(void);
+extern void test_init_LCD_SendString(void);
+extern void test_init_BMP180(void);
+extern void test_init_BMP180_altitude(void);
+extern void test_init_BMP180_getPressure(void);
 
 
 /*=======Mock Management=====*/
@@ -25,12 +25,15 @@ static void CMock_Init(void)
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
   GlobalOrderError = NULL;
+  mock_i2c_Init();
 }
 static void CMock_Verify(void)
 {
+  mock_i2c_Verify();
 }
 static void CMock_Destroy(void)
 {
+  mock_i2c_Destroy();
 }
 
 /*=======Test Reset Options=====*/
@@ -81,13 +84,12 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_project.c");
-  run_test(test_LedsOffAfterCreate , "test_LedsOffAfterCreate ", 17);
-  run_test(test_prender_un_led , "test_prender_un_led ", 24);
-  run_test(test_apagar_un_led , "test_apagar_un_led ", 31);
-  run_test(test_prender_y_apagar_varios_leds , "test_prender_y_apagar_varios_leds ", 39);
-  run_test(test_encender_todos_los_leds , "test_encender_todos_los_leds ", 59);
-  run_test(test_apagar_todos_los_leds , "test_apagar_todos_los_leds ", 66);
-  run_test(test_estado_leds , "test_estado_leds ", 73);
+  run_test(test_init_LCD, "test_init_LCD", 19);
+  run_test(test_init_LCD_SendString, "test_init_LCD_SendString", 26);
+  run_test(test_init_BMP180, "test_init_BMP180", 37);
+  run_test(test_init_BMP180_altitude, "test_init_BMP180_altitude", 57);
+  run_test(test_init_BMP180_getPressure, "test_init_BMP180_getPressure", 89);
 
+  CMock_Guts_MemFreeFinal();
   return UnityEnd();
 }

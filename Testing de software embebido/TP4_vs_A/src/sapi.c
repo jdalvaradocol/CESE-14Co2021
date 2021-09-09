@@ -1,7 +1,6 @@
 
 
-#include "Leds.h"
-#include <stdbool.h>
+#include "sapi.h"
 
 #define LEDS_ALL_OFF            0x0000
 #define LEDS_ALL_ON             0xFFFF
@@ -19,25 +18,31 @@ void LedsInit(uint16_t * direccion)
     puerto = direccion;
     *direccion = LEDS_ALL_OFF;
 }
-void LedsTurnOn(int led)
+void gpioInit(int led , bool estado)
 {
-    *puerto |= LedsIndexToMask(led);
+    puerto = LEDS_ALL_OFF;
 }
-void LedsTurnOff(int led)
+void gpioWrite(int led , bool estado)
 {
-    *puerto = (*puerto) & (~LedsIndexToMask(led));
-}
-void LedsTurnOnall(void)
-{
-    *puerto = LEDS_ALL_ON;
-}
-void LedsTurnOffall(void)
-{
-    *puerto = LEDS_ALL_OFF;
-}
-bool LedsState(int led)
-{
-    bool a = (*puerto) & (LedsIndexToMask(led));
+    if(estado == ON)
+    {
+        *puerto |= LedsIndexToMask(led);
+    }
+    else if(estado == OFF)
+    {
+        *puerto &= (~LedsIndexToMask(led));
+    }
 
-    return (a);
+}
+void Delay_us(int delay)
+{
+
+}
+void Delay_ms(int delay)
+{
+
+}
+void delay(int delay)
+{
+
 }

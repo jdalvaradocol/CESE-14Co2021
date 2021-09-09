@@ -1,4 +1,7 @@
-#include "src/Leds.h"
+#include "src/BMP180.h"
+#include "src/LCD.h"
+#include "src/sapi.h"
+#include "build/test/mocks/mock_i2c.h"
 #include "/var/lib/gems/2.7.0/gems/ceedling-0.31.1/vendor/unity/src/unity.h"
 
 
@@ -26,147 +29,7 @@ void tearDown (void)
 
 
 
-void test_LedsOffAfterCreate (void)
-
-{
-
-    uint16_t ledsvirtuales = 0xFFFF;
-
-    LedsInit(&ledsvirtuales);
-
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0x0000)), (UNITY_INT)(UNITY_INT16)((ledsvirtuales)), (
-
-   ((void *)0)
-
-   ), (UNITY_UINT)(21), UNITY_DISPLAY_STYLE_HEX16);
-
-}
-
-
-
-void test_prender_un_led (void)
-
-{
-
-    const int led = 2;
-
-    LedsTurnOn(led);
-
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((1 << (led-1))), (UNITY_INT)(UNITY_INT16)((ledsvirtuales)), (
-
-   ((void *)0)
-
-   ), (UNITY_UINT)(28), UNITY_DISPLAY_STYLE_HEX16);
-
-}
-
-
-
-void test_apagar_un_led (void)
-
-{
-
-    const int led = 2;
-
-    LedsTurnOn(led);
-
-    LedsTurnOff(led);
-
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0x0000)), (UNITY_INT)(UNITY_INT16)((ledsvirtuales)), (
-
-   ((void *)0)
-
-   ), (UNITY_UINT)(36), UNITY_DISPLAY_STYLE_HEX16);
-
-}
-
-
-
-void test_prender_y_apagar_varios_leds (void)
-
-{
-
-
-
-
-
-    LedsTurnOn(1);
-
-    LedsTurnOn(2);
-
-    LedsTurnOn(3);
-
-    LedsTurnOn(4);
-
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0x000F)), (UNITY_INT)(UNITY_INT16)((ledsvirtuales)), (
-
-   ((void *)0)
-
-   ), (UNITY_UINT)(47), UNITY_DISPLAY_STYLE_HEX16);
-
-
-
-
-
-
-
-    LedsTurnOff(1);
-
-    LedsTurnOff(2);
-
-    LedsTurnOff(3);
-
-    LedsTurnOff(4);
-
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0x0000)), (UNITY_INT)(UNITY_INT16)((ledsvirtuales)), (
-
-   ((void *)0)
-
-   ), (UNITY_UINT)(55), UNITY_DISPLAY_STYLE_HEX16);
-
-
-
-}
-
-
-
-void test_encender_todos_los_leds (void)
-
-{
-
-    LedsTurnOffall();
-
-    LedsTurnOnall();
-
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0xFFFF)), (UNITY_INT)(UNITY_INT16)((ledsvirtuales)), (
-
-   ((void *)0)
-
-   ), (UNITY_UINT)(63), UNITY_DISPLAY_STYLE_HEX16);
-
-}
-
-
-
-void test_apagar_todos_los_leds (void)
-
-{
-
-    LedsTurnOnall();
-
-    LedsTurnOffall();
-
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0x0000)), (UNITY_INT)(UNITY_INT16)((ledsvirtuales)), (
-
-   ((void *)0)
-
-   ), (UNITY_UINT)(70), UNITY_DISPLAY_STYLE_HEX16);
-
-}
-
-
-
-void test_estado_leds (void)
+void test_init_LCD(void)
 
 {
 
@@ -174,28 +37,336 @@ void test_estado_leds (void)
 
    _Bool 
 
-        estado;
+        valid = 0;
 
-    int led = 2;
+    valid = LCD_Init();
 
-    LedsTurnOn(led);
+    do {if ((valid)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(23)));}} while(0);
 
-    estado = LedsState(led);
+}
 
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((estado)), (UNITY_INT)(UNITY_INT16)((1)), (
+
+
+void test_init_LCD_SendString(void)
+
+{
+
+    
+
+   _Bool 
+
+           valid = 0;
+
+    char Buffer[20];
+
+    int Temperatura = 50;
+
+
+
+    sprintf(Buffer, "Temperatura = %2d",Temperatura);
+
+    valid = LCD_SendString(0,0,Buffer);
+
+    do {if ((valid)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(34)));}} while(0);
+
+}
+
+
+
+void test_init_BMP180(void)
+
+{
+
+    
+
+   _Bool 
+
+        valid = 0;
+
+    uint8_t reg = 0x00, value = 0x00;
+
+
+
+    i2cWrite_CMockExpectAndReturn(42, 0, 0x77, reg, 1, 0, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(43, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+
+
+    for ( reg = BMP180_CAL_AC1_REG; reg <= BMP180_CAL_MD_REG; reg+=2)
+
+    {
+
+        i2cWrite_CMockExpectAndReturn(47, 0, 0x77, reg, 1, 0, 
+
+       1
+
+       );
+
+        i2cRead_CMockExpectAndReturn(48, 0, 0x77, value, 1, 1, 
+
+       1
+
+       );
+
+        i2cWrite_CMockExpectAndReturn(49, 0, 0x77, reg+1, 1, 0, 
+
+       1
+
+       );
+
+        i2cRead_CMockExpectAndReturn(50, 0, 0x77, value, 1, 1, 
+
+       1
+
+       );
+
+    }
+
+
+
+    valid = BMP180_init(0x77);
+
+    do {if ((valid)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(54)));}} while(0);
+
+}
+
+
+
+void test_init_BMP180_altitude(void)
+
+{
+
+    int32_t altitude = 0;
+
+    uint8_t reg = 0x00, value = 0x00;
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(63, 0, 0x77, 0xF4, 1, 0, 
+
+   1
+
+   );
+
+    i2cWrite_CMockExpectAndReturn(64, 0, 0x77, 0x2E, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(67, 0, 0x77, 0xF6, 1, 0, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(68, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(69, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(72, 0, 0x77, 0xF4, 1, 0, 
+
+   1
+
+   );
+
+    i2cWrite_CMockExpectAndReturn(73, 0, 0x77, 0x34, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(76, 0, 0x77, 0xF6, 1, 0, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(77, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(78, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(81, 0, 0x77, 0xF8, 1, 0, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(82, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+
+
+    altitude = BMP180_altitude(0x77);
+
+
+
+    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT32)((44330)), (UNITY_INT)(UNITY_INT32)((altitude)), (
 
    ((void *)0)
 
-   ), (UNITY_UINT)(79), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(86), UNITY_DISPLAY_STYLE_INT32);
 
-    LedsTurnOff(led);
+}
 
-    estado = LedsState(led);
 
-    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((estado)), (UNITY_INT)(UNITY_INT16)((0)), (
+
+void test_init_BMP180_getPressure(void)
+
+{
+
+    int32_t altitude = 0;
+
+    uint8_t reg = 0x00, value = 0x00;
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(95, 0, 0x77, 0xF4, 1, 0, 
+
+   1
+
+   );
+
+    i2cWrite_CMockExpectAndReturn(96, 0, 0x77, 0x2E, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(99, 0, 0x77, 0xF6, 1, 0, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(100, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(101, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(104, 0, 0x77, 0xF4, 1, 0, 
+
+   1
+
+   );
+
+    i2cWrite_CMockExpectAndReturn(105, 0, 0x77, 0x34, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(108, 0, 0x77, 0xF6, 1, 0, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(109, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(110, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+
+
+
+
+    i2cWrite_CMockExpectAndReturn(113, 0, 0x77, 0xF8, 1, 0, 
+
+   1
+
+   );
+
+    i2cRead_CMockExpectAndReturn(114, 0, 0x77, value, 1, 1, 
+
+   1
+
+   );
+
+
+
+    altitude = BMP180_getPressure(0x77);
+
+
+
+    UnityAssertEqualNumber((UNITY_INT)(UNITY_INT32)((255)), (UNITY_INT)(UNITY_INT32)((altitude)), (
 
    ((void *)0)
 
-   ), (UNITY_UINT)(82), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(118), UNITY_DISPLAY_STYLE_INT32);
 
 }

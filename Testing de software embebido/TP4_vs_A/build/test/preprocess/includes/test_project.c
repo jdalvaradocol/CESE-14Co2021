@@ -1,3 +1,6 @@
 ---
 - "/var/lib/gems/2.7.0/gems/ceedling-0.31.1/vendor/unity/src/unity.h"
-- src/Leds.h
+- build/test/mocks/mock_i2c.h
+- src/sapi.h
+- src/LCD.h
+- src/BMP180.h

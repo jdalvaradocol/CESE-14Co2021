@@ -3,40 +3,32 @@
   :path: test
   :file: test_project.c
 :successes:
-- :test: 'test_LedsOffAfterCreate '
-  :line: 17
+- :test: test_init_LCD
+  :line: 19
   :message: ''
   :unity_test_time: 0
-- :test: 'test_prender_un_led '
-  :line: 24
+- :test: test_init_LCD_SendString
+  :line: 26
   :message: ''
   :unity_test_time: 0
-- :test: 'test_apagar_un_led '
-  :line: 31
+- :test: test_init_BMP180
+  :line: 37
   :message: ''
   :unity_test_time: 0
-- :test: 'test_prender_y_apagar_varios_leds '
-  :line: 39
+- :test: test_init_BMP180_altitude
+  :line: 57
   :message: ''
   :unity_test_time: 0
-- :test: 'test_encender_todos_los_leds '
-  :line: 59
-  :message: ''
-  :unity_test_time: 0
-- :test: 'test_apagar_todos_los_leds '
-  :line: 66
-  :message: ''
-  :unity_test_time: 0
-- :test: 'test_estado_leds '
-  :line: 73
+- :test: test_init_BMP180_getPressure
+  :line: 89
   :message: ''
   :unity_test_time: 0
 :failures: []
 :ignores: []
 :counts:
-  :total: 7
-  :passed: 7
+  :total: 5
+  :passed: 5
   :failed: 0
   :ignored: 0
 :stdout: []
-:time: 0.0018784619969665073
+:time: 0.0012338349988567643

@@ -61,15 +61,15 @@ int main( void )
     // ---------- CONFIGURACIONES ------------------------------
     boardConfig();									// Inicializar y configurar la plataforma
 
-	debugPrintConfigUart( USED_UART , UART_RATE );		// UART for debug messages
+    debugPrintConfigUart( USED_UART , UART_RATE );		// UART for debug messages
 
-	SD_data_init();
+    SD_data_init();
 
-	LCD_Config();
+    LCD_Config();
 
-	LCD_Init();
+    LCD_Init();
 
-	LCD_SendCmd(0x01);
+    LCD_SendCmd(0x01);
 
     i2cInit(I2C0, 100000);
 
